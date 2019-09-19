@@ -57,7 +57,7 @@ Notice that we have chosen to tag these logs as _nginx.error_ to help route them
 Some logs have single entries which span multiple lines. Typically one log entry is the equivalent of one log line; but what if you have a stack trace or other long message which is made up of multiple lines but is logically all one piece? In that case you can use a multiline parser with a regex that indicates where to start a new log entry. A common start would be a timestamp; whenever the line begins with a timestamp treat that as the start of a new log entry. If the next line begins with something else, continue appending it to the previous log entry. 
 
 ```
- <filter applog.test>
+ <filter backend.application>
     @type parser
     <parse>
       @type multiline_grok
@@ -69,27 +69,27 @@ Some logs have single entries which span multiple lines. Typically one log entry
     </parse>
   </filter>
 ```
-<filter backend.application>
-  @type record_transformer
-  <record>
-    service_name backend.application
-  </record>
-</filter>
+The above example uses [multiline_grok](https://github.com/fluent/fluent-plugin-grok-parser#multiline-support) to parse the log line; another common parse filter would be the standard [multiline parser](https://docs.fluentd.org/parser/multiline). This is also the first example of using a [<filter>](https://docs.fluentd.org/filter). Multiple filters can be applied before matching and outputting the results. In the example, any line which begins with "abc" will be considered the start of a log entry; any line beginning with something else will be appended.
+  
+### Adding the service_name field
 
+It is possible to add data to a log entry before shipping it. In Fluentd entries are called "fields" while in NRDB they are referred to as the attributes of an event. Different names in different systems for the same data. One important field for organizing your logs is the _service_name_ field. This is a reserved field name in New Relic along with _message_. 
+
+```
 <source>
   @type syslog
   port 5140
-  tag culmone
+  tag backend.application
 </source>
 
-
-
-
-```
-<match **>
-  @type newrelic
-  api_key 7JR6UXcGHjErDJ7w4uVOqtbN-u1vI2VD
-</match>
+<filter backend.application>
+  @type record_transformer
+  <record>
+    service_name ${tag}
+  </record>
+</filter>
 ```
 
-https://docs.fluentd.org/parser
+This example makes use of the [record_transformer](https://docs.fluentd.org/filter/record_transformer) filter. It allows you to change the contents of the log entry (the record) as it passes through the pipeline. The field name is _service_name_ and the value is a variable _${tag}_ that references the tag value the filter matched on. The tag value of _backend.application_ set in the <source> block is picked up by the filter; that value is referenced by the variable. 
+
+The result is that __"service_name: backend.application"__ is added to the record.
