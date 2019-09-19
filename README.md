@@ -108,6 +108,30 @@ This example makes use of the [record_transformer](https://docs.fluentd.org/filt
 
 The result is that __"service_name: backend.application"__ is added to the record.
 
+### Filtering Data
+
+The module [filter_grep](https://docs.fluentd.org/filter/grep) can be used to filter data in or out based on a match against the tag or a record value. 
+
+```
+<filter backend.application>
+  @type grep
+  <regexp>
+    key service_name
+    pattern /backend.application/
+  </regexp>
+</filter>
+
+<filter backend.application>
+  @type grep
+  <regexp>
+    key sample_field
+    pattern /some_other_value/
+  </regexp>
+</filter>
+```
+
+This example would only collect logs that matched the filter criteria for service_name. Multile filters that all match to the same tag will be evaluated in the order they are declared. So in this example, logs which matched a _service_name_ of backend.application_ and a _sample_field_ value of _some_other_value_ would be included. 
+
 ## Complete Examples
 
 ### Minimal Configuration
