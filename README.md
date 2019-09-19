@@ -19,6 +19,20 @@ One of the most common types of log input is tailing a file. The in_tail input p
 
 In this tail example, we are declaring that the logs should not be parsed by seeting _@type none_. We are also adding a tag that will control routing. By setting _tag backend.application_ we can specify filter and match blocks that will only process the logs from this one source. More details on how routing works in Fluentd can be found [here](https://docs.fluentd.org/configuration/routing-examples). 
 
+### Syslog Input
+
+Another very common source of logs is syslog, This example will bind to all addresses and listen on the specified port for syslog messages.
+
+```
+<source>
+  @type syslog
+  port 5140
+  tag syslog.messages
+</source>
+```
+
+## Managing Data
+
 ### Adding Parsing
 
 Sometimes you will have logs which you wish to parse. There is a set of built-in parsers listed [here](https://docs.fluentd.org/parser#list-of-built-in-parsers) which can be applied. Some of the parsers like the _nginx_ parser understand a common log format and can parse it "automatically." Others like the _regexp_ parser are used to declare custom parsing logic. There is also a very commonly used 3rd party parser for [grok](https://github.com/fluent/fluent-plugin-grok-parser) that provides a set of regex macros to simplify parsing.
@@ -93,3 +107,30 @@ It is possible to add data to a log entry before shipping it. In Fluentd entries
 This example makes use of the [record_transformer](https://docs.fluentd.org/filter/record_transformer) filter. It allows you to change the contents of the log entry (the record) as it passes through the pipeline. The field name is _service_name_ and the value is a variable _${tag}_ that references the tag value the filter matched on. The tag value of _backend.application_ set in the <source> block is picked up by the filter; that value is referenced by the variable. 
 
 The result is that __"service_name: backend.application"__ is added to the record.
+
+## Complete Examples
+
+### Minimal Configuration
+
+```
+<source>
+  @type tail
+  <parse>
+    @type none
+  </parse>
+  path /home/logs/*
+  tag sample.tag
+</source>
+
+<filter sample.tag>
+  @type record_transformer
+  <record>
+    service_name ${tag}
+  </record>
+</filter>
+
+<match **>
+  @type newrelic
+  api_key <your key goes here>
+</match>
+```
