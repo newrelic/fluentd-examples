@@ -1,0 +1,8 @@
+<source>
+  @type tail
+  <parse>
+    @type none
+  </parse>
+  path /home/logs/*
+  tag backend.application
+</source>
