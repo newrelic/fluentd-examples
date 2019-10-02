@@ -31,6 +31,26 @@ Another very common source of logs is syslog, This example will bind to all addr
 </source>
 ```
 
+## Outputs
+
+### Sending one Log to Multiple Destinations
+
+In order to make previewing the logging solution easier, you can configure output using the [out_copy](https://docs.fluentd.org/output/copy) plugin to wrap multiple output types, copying one log to both outputs. 
+
+```
+<match **>
+  @type copy
+  <store>
+    @type file
+    path /var/log/testlog/testlog
+  </store>
+  <store>
+    @type newrelic
+    api_key blahBlahBlaHHABlablahabla
+  </store>
+</match>
+```
+
 ## Managing Data
 
 ### Adding Parsing
