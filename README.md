@@ -162,7 +162,7 @@ This example would only collect logs that matched the filter criteria for servic
   <parse>
     @type none
   </parse>
-  path /home/logs/*
+  path /var/log/*
   tag sample.tag
 </source>
 
