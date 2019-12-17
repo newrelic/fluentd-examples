@@ -120,6 +120,7 @@ It is possible to add data to a log entry before shipping it. In Fluentd entries
   @type record_transformer
   <record>
     service_name ${tag}
+    hostname "#{Socket.gethostname}"
   </record>
 </filter>
 ```
