@@ -105,7 +105,7 @@ Some logs have single entries which span multiple lines. Typically one log entry
 ```
 The above example uses [multiline_grok](https://github.com/fluent/fluent-plugin-grok-parser#multiline-support) to parse the log line; another common parse filter would be the standard [multiline parser](https://docs.fluentd.org/parser/multiline). This is also the first example of using a [<filter>](https://docs.fluentd.org/filter). Multiple filters can be applied before matching and outputting the results. In the example, any line which begins with "abc" will be considered the start of a log entry; any line beginning with something else will be appended.
   
-### Adding the service_name field
+### Adding fields
 
 It is possible to add data to a log entry before shipping it. In Fluentd entries are called "fields" while in NRDB they are referred to as the attributes of an event. Different names in different systems for the same data. One important field for organizing your logs is the _service_name_ field. This is a reserved field name in New Relic along with _message_. 
 
@@ -120,14 +120,17 @@ It is possible to add data to a log entry before shipping it. In Fluentd entries
   @type record_transformer
   <record>
     service_name ${tag}
-    hostname "#{Socket.gethostname}"
+    hostname ${hostname}
   </record>
 </filter>
 ```
 
-This example makes use of the [record_transformer](https://docs.fluentd.org/filter/record_transformer) filter. It allows you to change the contents of the log entry (the record) as it passes through the pipeline. The field name is _service_name_ and the value is a variable _${tag}_ that references the tag value the filter matched on. The tag value of _backend.application_ set in the <source> block is picked up by the filter; that value is referenced by the variable. 
+This example makes use of the [record_transformer](https://docs.fluentd.org/filter/record_transformer) filter. It allows you to change the contents of the log entry (the record) as it passes through the pipeline. The field name is _service_name_ and the value is a variable _${tag}_ that references the tag value the filter matched on. The tag value of _backend.application_ set in the <source> block is picked up by the filter; that value is referenced by the variable. The result is that __"service_name: backend.application"__ is added to the record.
 
-The result is that __"service_name: backend.application"__ is added to the record.
+Hostname is also added here using a variable. This syntax will only work in the record_transformer filter. If you are trying to set the hostname in another place such as a source block, use the following:
+```
+hostname "#{Socket.gethostname}"
+```
 
 ### Filtering Data
 
