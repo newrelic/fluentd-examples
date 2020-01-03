@@ -13,6 +13,7 @@ One of the most common types of log input is tailing a file. The in_tail input p
     @type none
   </parse>
   path /home/logs/*
+  pos_file /home/logs/backend.application.pos
   tag backend.application
 </source>
 ```
