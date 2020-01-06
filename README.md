@@ -19,7 +19,9 @@ One of the most common types of log input is tailing a file. The in_tail input p
 </source>
 ```
 
-In this tail example, we are declaring that the logs should not be parsed by seeting _@type none_. We are also adding a tag that will control routing. By setting _tag backend.application_ we can specify filter and match blocks that will only process the logs from this one source. More details on how routing works in Fluentd can be found [here](https://docs.fluentd.org/configuration/routing-examples). 
+In this tail example, we are declaring that the logs should not be parsed by seeting _@type none_. We are also adding a tag that will control routing. By setting _tag backend.application_ we can specify filter and match blocks that will only process the logs from this one source. More details on how routing works in Fluentd can be found [here](https://docs.fluentd.org/configuration/routing-examples).
+
+Two other parameters are used here. Path_key is a value that the filepath of the log file data is gathered from will be stored into. So in this case, the log that appears in New Relic Logs will have an attribute called "filename" with the value of the log file data was tailed from. Pos_file is a database file that is created by Fluentd and keeps track of what log data has been tailed and successfully sent to the output. This helps to ensure that the all data from the log is read.
 
 ### Syslog Input
 
