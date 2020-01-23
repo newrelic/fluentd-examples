@@ -158,7 +158,7 @@ The module [filter_grep](https://docs.fluentd.org/filter/grep) can be used to fi
 </filter>
 ```
 
-This example would only collect logs that matched the filter criteria for service_name. Multile filters that all match to the same tag will be evaluated in the order they are declared. So in this example, logs which matched a _service_name_ of backend.application_ and a _sample_field_ value of _some_other_value_ would be included. 
+This example would only collect logs that matched the filter criteria for service_name. Multiple filters that all match to the same tag will be evaluated in the order they are declared. So in this example, logs which matched a _service_name_ of backend.application_ and a _sample_field_ value of _some_other_value_ would be included. 
 
 ## Complete Examples
 
