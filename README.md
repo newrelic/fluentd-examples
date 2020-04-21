@@ -109,9 +109,9 @@ Some logs have single entries which span multiple lines. Typically one log entry
 ```
 The above example uses [multiline_grok](https://github.com/fluent/fluent-plugin-grok-parser#multiline-support) to parse the log line; another common parse filter would be the standard [multiline parser](https://docs.fluentd.org/parser/multiline). This is also the first example of using a [<filter>](https://docs.fluentd.org/filter). Multiple filters can be applied before matching and outputting the results. In the example, any line which begins with "abc" will be considered the start of a log entry; any line beginning with something else will be appended.
   
-### Adding fields
+### Adding common fields
 
-It is possible to add data to a log entry before shipping it. In Fluentd entries are called "fields" while in NRDB they are referred to as the attributes of an event. Different names in different systems for the same data. One important field for organizing your logs is the _service_name_ field. This is a reserved field name in New Relic along with _message_. 
+It is possible to add data to a log entry before shipping it. In Fluentd entries are called "fields" while in NRDB they are referred to as the attributes of an event. Different names in different systems for the same data. Some other important fields for organizing your logs are the _service_name_ field and hostname.
 
 ```
 <source>
@@ -123,6 +123,7 @@ It is possible to add data to a log entry before shipping it. In Fluentd entries
 <filter backend.application>
   @type record_transformer
   <record>
+    logtype nginx
     service_name ${tag}
     hostname ${hostname}
   </record>
