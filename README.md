@@ -178,6 +178,7 @@ This example would only collect logs that matched the filter criteria for servic
 <filter sample.tag>
   @type record_transformer
   <record>
+    logtype nginx
     service_name ${tag}
   </record>
 </filter>
